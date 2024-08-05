@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuites name="vitest tests" tests="1" failures="0" errors="0" time="15.602">
-    <testsuite name="src/App.test.tsx" timestamp="2024-08-05T02:43:00.907Z" hostname="DESKTOP-4GAC11J" tests="1" failures="0" errors="0" skipped="0" time="0.044">
-        <testcase classname="src/App.test.tsx" name="Testing Application &gt; Checking if word &apos;Vite&apos; exists in Application page" time="0.042">
+<testsuites name="vitest tests" tests="1" failures="0" errors="0" time="1.848">
+    <testsuite name="src/App.test.tsx" timestamp="2024-08-05T02:57:49.626Z" hostname="DESKTOP-4GAC11J" tests="1" failures="0" errors="0" skipped="0" time="0.039">
+        <testcase classname="src/App.test.tsx" name="Testing Application &gt; Checking if word &apos;Vite&apos; exists in Application page" time="0.038">
         </testcase>
     </testsuite>
 </testsuites>
