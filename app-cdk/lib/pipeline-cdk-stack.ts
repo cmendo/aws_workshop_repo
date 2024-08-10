@@ -5,7 +5,7 @@ import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import * as ssm from 'aws-cdk-lib/aws-ssm';
+//import * as ssm from 'aws-cdk-lib/aws-ssm';
 import { Construct } from 'constructs';
 import { Stack, StackProps, CfnOutput } from 'aws-cdk-lib';
 
@@ -70,7 +70,7 @@ export class MyPipelineStack extends cdk.Stack {
 
     dockerBuild.addToRolePolicy(dockerBuildRolePolicy);
 
-    const signerARNParameter = new ssm.StringParameter(this, 'SignerARNParam', {
+   /* const signerARNParameter = new ssm.StringParameter(this, 'SignerARNParam', {
       parameterName: 'signer-profile-arn',
       stringValue: 'arn:aws:signer:us-east-1:808759191433:/signing-profiles/ecr_signing_profile',
     });
@@ -79,9 +79,9 @@ export class MyPipelineStack extends cdk.Stack {
       effect: iam.Effect.ALLOW,
       resources: [signerARNParameter.parameterArn],
       actions: ['ssm:GetParametersByPath', 'ssm:GetParameters'],
-    });
+    });*/
 
-    dockerBuild.addToRolePolicy(signerParameterPolicy);
+    //dockerBuild.addToRolePolicy(signerParameterPolicy);
 
     const signerPolicy = new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
@@ -93,7 +93,7 @@ export class MyPipelineStack extends cdk.Stack {
       ],
     });
 
-    dockerBuild.addToRolePolicy(signerPolicy);
+  //  dockerBuild.addToRolePolicy(signerPolicy);
 
     // Define los artefactos
     const sourceOutput = new codepipeline.Artifact();
