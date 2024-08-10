@@ -8,6 +8,11 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $IMAGE_REPO_URI
+      - echo Downloading AWS Signer and Notation CLI
+      - wget https://d2hvyiie56hcat.cloudfront.net/linux/amd64/installer/deb/latest/aws-signer-notation-cli_amd64.deb
+      - echo Installing AWS Signer and Notation CLI
+      - sudo dpkg -i -E aws-signer-notation-cli_amd64.deb
+      - notation version
   build:
     commands:
       - cd ./my-app
@@ -20,3 +25,11 @@ phases:
       - echo Build completed on `date`
       - echo Pushing the Docker image...
       - docker push $IMAGE_REPO_URI:$IMAGE_TAG
+      - echo Getting ECR repository name in which the container image is pushed
+      - export REPO_NAME=$(echo $IMAGE_REPO_URI | awk -F'/' '{print $2}')
+      - echo Getting SHA digest of the latest image pushed
+      - export IMAGE_SHA=$(aws ecr describe-images --repository-name $REPO_NAME --image-ids imageTag=$IMAGE_TAG | jq -r "(.imageDetails[0].imageDigest)")
+      - echo Signing the latest image pushed to ECR
+      - export IMAGE_SHA_ARN=$IMAGE_REPO_URI@$IMAGE_SHA
+      - notation sign $IMAGE_SHA_ARN --plugin com.amazonaws.signer.notation.plugin --id $SIGNER_PROFILE_ARN
+      - notation inspect $IMAGE_SHA_ARN
