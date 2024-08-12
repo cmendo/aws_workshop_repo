@@ -5,11 +5,12 @@ import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as iam from 'aws-cdk-lib/aws-iam';
-//import * as ssm from 'aws-cdk-lib/aws-ssm';
 import { Construct } from 'constructs';
 import { Stack, StackProps, CfnOutput } from 'aws-cdk-lib';
+import * as ecsPatterns from 'aws-cdk-lib/aws-ecs-patterns';
 interface ConsumerProps extends StackProps {
   ecrRepository: ecr.Repository,
+  fargateServiceTest: ecsPatterns.ApplicationLoadBalancedFargateService,
 }
 
 export class MyPipelineStack extends cdk.Stack {
@@ -137,6 +138,17 @@ export class MyPipelineStack extends cdk.Stack {
           outputs: [dockerBuildOutput],
         }),
       ],
+    });
+
+    pipeline.addStage({
+      stageName: 'Deploy-Test',
+      actions: [
+        new codepipeline_actions.EcsDeployAction({
+          actionName: 'Deploy-Fargate-Test',
+          service: props.fargateServiceTest.service,
+          input: dockerBuildOutput,
+        }),
+      ]
     });
 
 
