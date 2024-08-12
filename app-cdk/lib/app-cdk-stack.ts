@@ -38,9 +38,9 @@ export class AppCdkStack extends Stack {
 
     this.fargateService.targetGroup.configureHealthCheck({
       healthyThresholdCount: 2,
-      unhealthyThresholdCount: 2,
-      timeout: Duration.seconds(10),
-      interval:Duration.seconds(11),
+      unhealthyThresholdCount: 10,
+      timeout: Duration.seconds(30),
+      interval:Duration.seconds(60),
       path: "/my-app",
     });
 

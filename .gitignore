@@ -1,0 +1,15 @@
+# Ignorar carpetas de dependencias
+node_modules/
+# System files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# IDE files
+.vscode/
+.idea/
+
+# Environment files
+.env
