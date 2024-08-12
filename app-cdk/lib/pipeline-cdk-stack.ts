@@ -7,10 +7,10 @@ import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 import { Stack, StackProps, CfnOutput } from 'aws-cdk-lib';
-//import * as ecsPatterns from 'aws-cdk-lib/aws-ecs-patterns';
+import * as ecsPatterns from 'aws-cdk-lib/aws-ecs-patterns';
 interface ConsumerProps extends StackProps {
   ecrRepository: ecr.Repository,
-  //fargateServiceTest: ecsPatterns.ApplicationLoadBalancedFargateService,
+  fargateServiceTest: ecsPatterns.ApplicationLoadBalancedFargateService,
 }
 
 export class MyPipelineStack extends cdk.Stack {
@@ -140,7 +140,7 @@ export class MyPipelineStack extends cdk.Stack {
       ],
     });
 
-    /*pipeline.addStage({
+    pipeline.addStage({
       stageName: 'Deploy-Test',
       actions: [
         new codepipeline_actions.EcsDeployAction({
@@ -149,8 +149,7 @@ export class MyPipelineStack extends cdk.Stack {
           input: dockerBuildOutput,
         }),
       ]
-    });*/
-
+    });
 
     // Crear una salida para la URL del pipeline
     new CfnOutput(this, 'PipelineConsoleUrl', {
