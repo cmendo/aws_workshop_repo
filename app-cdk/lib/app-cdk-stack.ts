@@ -4,11 +4,17 @@ import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as ecsPatterns from 'aws-cdk-lib/aws-ecs-patterns';
+<<<<<<< HEAD
 
 interface ConsumerProps extends StackProps {
   ecrRepository: ecr.Repository;
 }
 
+=======
+interface ConsumerProps extends StackProps {
+  ecrRepository: ecr.Repository;
+}
+>>>>>>> parent of 0c3d7d3 (Delete app-cdk directory)
 export class AppCdkStack extends Stack {
   public readonly fargateService: ecsPatterns.ApplicationLoadBalancedFargateService;
 

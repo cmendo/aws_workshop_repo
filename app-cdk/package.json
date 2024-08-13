@@ -26,7 +26,10 @@
     "@aws-cdk/aws-secretsmanager": "^1.204.0",
     "@aws-cdk/core": "^1.204.0",
     "aws-cdk-lib": "^2.151.0",
+<<<<<<< HEAD
     "construct": "^1.0.0",
+=======
+>>>>>>> parent of 0c3d7d3 (Delete app-cdk directory)
     "constructs": "^10.3.0",
     "source-map-support": "^0.5.21"
   }
