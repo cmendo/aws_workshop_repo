@@ -20,5 +20,3 @@ npm-debug.log*
 cdk.context.json
 .cdk.staging
 cdk.out
-app-cdk/
-cdk.out/
