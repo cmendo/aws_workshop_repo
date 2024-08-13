@@ -34,7 +34,7 @@ export class PipelineCdkStack extends cdk.Stack {
         privileged: true,
         computeType: codebuild.ComputeType.LARGE,
       },
-      buildSpec: codebuild.BuildSpec.fromSourceFilename('buildspec_test.yml'),
+      buildSpec: codebuild.BuildSpec.fromSourceFilename('../buildspec_test.yml'),
     });
 
     const dockerBuild = new codebuild.PipelineProject(this, 'DockerBuild', {
@@ -48,7 +48,7 @@ export class PipelineCdkStack extends cdk.Stack {
         privileged: true,
         computeType: codebuild.ComputeType.LARGE,
       },
-      buildSpec: codebuild.BuildSpec.fromSourceFilename('buildspec_docker.yml'),
+      buildSpec: codebuild.BuildSpec.fromSourceFilename('../buildspec_docker.yml'),
     });
 
     const dockerBuildRolePolicy = new iam.PolicyStatement({
