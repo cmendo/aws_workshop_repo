@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { Stack, StackProps, CfnOutput } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
@@ -17,6 +18,8 @@ interface ConsumerProps extends StackProps {
 
 export class PipelineCdkStack extends cdk.Stack {
 =======
+=======
+>>>>>>> parent of 0c3d7d3 (Delete app-cdk directory)
 import * as cdk from 'aws-cdk-lib';
 import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
 import * as codepipeline_actions from 'aws-cdk-lib/aws-codepipeline-actions';
@@ -33,6 +36,9 @@ interface ConsumerProps extends StackProps {
 }
 
 export class MyPipelineStack extends cdk.Stack {
+<<<<<<< HEAD
+>>>>>>> parent of 0c3d7d3 (Delete app-cdk directory)
+=======
 >>>>>>> parent of 0c3d7d3 (Delete app-cdk directory)
   constructor(scope: Construct, id: string, props: ConsumerProps) {
     super(scope, id, props);
@@ -40,6 +46,7 @@ export class MyPipelineStack extends cdk.Stack {
     // Recupera el secreto de GitHub
     const githubSecret = secretsmanager.Secret.fromSecretNameV2(this, 'aws/secretsmanager', 'github/personal_access_token');
     
+<<<<<<< HEAD
 <<<<<<< HEAD
     // Define el pipeline
     const pipeline = new codepipeline.Pipeline(this, 'Pipeline', {
@@ -53,6 +60,10 @@ export class MyPipelineStack extends cdk.Stack {
     // Crea un proyecto de CodeBuild -- agregamos el enviroment
     const buildProject = new codebuild.PipelineProject(this, 'BuildProject', {
 >>>>>>> parent of 0c3d7d3 (Delete app-cdk directory)
+=======
+    // Crea un proyecto de CodeBuild -- agregamos el enviroment
+    const buildProject = new codebuild.PipelineProject(this, 'BuildProject', {
+>>>>>>> parent of 0c3d7d3 (Delete app-cdk directory)
       environment: {
         buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
         privileged: true,
@@ -62,12 +73,18 @@ export class MyPipelineStack extends cdk.Stack {
     });
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 0c3d7d3 (Delete app-cdk directory)
     // Define el pipeline
     const pipeline = new codepipeline.Pipeline(this, 'Pipeline', {
       pipelineName: 'CICD_Pipeline',
     });
 
+<<<<<<< HEAD
+>>>>>>> parent of 0c3d7d3 (Delete app-cdk directory)
+=======
 >>>>>>> parent of 0c3d7d3 (Delete app-cdk directory)
     const dockerBuild = new codebuild.PipelineProject(this, 'DockerBuild', {
       environmentVariables: {
@@ -105,10 +122,13 @@ export class MyPipelineStack extends cdk.Stack {
     dockerBuild.addToRolePolicy(dockerBuildRolePolicy);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     // Define los artefactos
     const sourceOutput = new codepipeline.Artifact();
     const unitTestOutput = new codepipeline.Artifact();
 =======
+=======
+>>>>>>> parent of 0c3d7d3 (Delete app-cdk directory)
    /* const signerARNParameter = new ssm.StringParameter(this, 'SignerARNParam', {
       parameterName: 'signer-profile-arn',
       stringValue: 'arn:aws:signer:us-east-1:808759191433:/signing-profiles/ecr_signing_profile',
@@ -137,6 +157,9 @@ export class MyPipelineStack extends cdk.Stack {
     // Define los artefactos
     const sourceOutput = new codepipeline.Artifact();
     const buildOutput = new codepipeline.Artifact();
+<<<<<<< HEAD
+>>>>>>> parent of 0c3d7d3 (Delete app-cdk directory)
+=======
 >>>>>>> parent of 0c3d7d3 (Delete app-cdk directory)
     const dockerBuildOutput = new codepipeline.Artifact();
 
@@ -158,6 +181,7 @@ export class MyPipelineStack extends cdk.Stack {
     // Agrega la etapa de construcción
     pipeline.addStage({
 <<<<<<< HEAD
+<<<<<<< HEAD
       stageName: 'Code-Quality-Testing',
       actions: [
         new codepipeline_actions.CodeBuildAction({
@@ -170,6 +194,8 @@ export class MyPipelineStack extends cdk.Stack {
     });
   
 =======
+=======
+>>>>>>> parent of 0c3d7d3 (Delete app-cdk directory)
       stageName: 'Build',
       actions: [
         new codepipeline_actions.CodeBuildAction({
@@ -181,6 +207,9 @@ export class MyPipelineStack extends cdk.Stack {
       ],
     });
 
+<<<<<<< HEAD
+>>>>>>> parent of 0c3d7d3 (Delete app-cdk directory)
+=======
 >>>>>>> parent of 0c3d7d3 (Delete app-cdk directory)
     pipeline.addStage({
       stageName: 'Docker-Push-ECR',
@@ -206,6 +235,7 @@ export class MyPipelineStack extends cdk.Stack {
     });
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     /*pipeline.addStage({
       stageName: 'Deploy-Production',
       actions: [
@@ -222,6 +252,8 @@ export class MyPipelineStack extends cdk.Stack {
       ],
     });*/
 
+=======
+>>>>>>> parent of 0c3d7d3 (Delete app-cdk directory)
 =======
 >>>>>>> parent of 0c3d7d3 (Delete app-cdk directory)
     // Crear una salida para la URL del pipeline
