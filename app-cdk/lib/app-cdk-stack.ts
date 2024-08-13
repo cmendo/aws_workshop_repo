@@ -4,9 +4,11 @@ import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as ecsPatterns from 'aws-cdk-lib/aws-ecs-patterns';
+
 interface ConsumerProps extends StackProps {
   ecrRepository: ecr.Repository;
 }
+
 export class AppCdkStack extends Stack {
   public readonly fargateService: ecsPatterns.ApplicationLoadBalancedFargateService;
 

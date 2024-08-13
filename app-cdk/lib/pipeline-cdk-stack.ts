@@ -1,38 +1,40 @@
-import * as cdk from 'aws-cdk-lib';
-import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
-import * as codepipeline_actions from 'aws-cdk-lib/aws-codepipeline-actions';
-import * as codebuild from 'aws-cdk-lib/aws-codebuild';
+import { Stack, StackProps, CfnOutput } from 'aws-cdk-lib';
+import { Construct } from 'constructs';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
+import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
+import * as codebuild from 'aws-cdk-lib/aws-codebuild';
+import * as codepipeline_actions from 'aws-cdk-lib/aws-codepipeline-actions';
 import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import { Construct } from 'constructs';
-import { Stack, StackProps, CfnOutput } from 'aws-cdk-lib';
 import * as ecsPatterns from 'aws-cdk-lib/aws-ecs-patterns';
+import * as cdk from 'aws-cdk-lib';
 interface ConsumerProps extends StackProps {
   ecrRepository: ecr.Repository,
   fargateServiceTest: ecsPatterns.ApplicationLoadBalancedFargateService,
+  fargateServiceProd: ecsPatterns.ApplicationLoadBalancedFargateService,
 }
 
-export class MyPipelineStack extends cdk.Stack {
+export class PipelineCdkStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: ConsumerProps) {
     super(scope, id, props);
 
     // Recupera el secreto de GitHub
     const githubSecret = secretsmanager.Secret.fromSecretNameV2(this, 'aws/secretsmanager', 'github/personal_access_token');
     
+    // Define el pipeline
+    const pipeline = new codepipeline.Pipeline(this, 'Pipeline', {
+      pipelineName: 'CICD_Pipeline',
+      crossAccountKeys: false,
+    });
+
     // Crea un proyecto de CodeBuild -- agregamos el enviroment
-    const buildProject = new codebuild.PipelineProject(this, 'BuildProject', {
+    const codeBuild = new codebuild.PipelineProject(this, 'BuildProject', {
       environment: {
         buildImage: codebuild.LinuxBuildImage.STANDARD_7_0,
         privileged: true,
         computeType: codebuild.ComputeType.LARGE,
       },
       buildSpec: codebuild.BuildSpec.fromSourceFilename('buildspec_test.yml'),
-    });
-
-    // Define el pipeline
-    const pipeline = new codepipeline.Pipeline(this, 'Pipeline', {
-      pipelineName: 'CICD_Pipeline',
     });
 
     const dockerBuild = new codebuild.PipelineProject(this, 'DockerBuild', {
@@ -70,34 +72,9 @@ export class MyPipelineStack extends cdk.Stack {
 
     dockerBuild.addToRolePolicy(dockerBuildRolePolicy);
 
-   /* const signerARNParameter = new ssm.StringParameter(this, 'SignerARNParam', {
-      parameterName: 'signer-profile-arn',
-      stringValue: 'arn:aws:signer:us-east-1:808759191433:/signing-profiles/ecr_signing_profile',
-    });
-
-    const signerParameterPolicy = new iam.PolicyStatement({
-      effect: iam.Effect.ALLOW,
-      resources: [signerARNParameter.parameterArn],
-      actions: ['ssm:GetParametersByPath', 'ssm:GetParameters'],
-    });*/
-
-    //dockerBuild.addToRolePolicy(signerParameterPolicy);
-
-    const signerPolicy = new iam.PolicyStatement({
-      effect: iam.Effect.ALLOW,
-      resources: ['*'],
-      actions: [
-        'signer:PutSigningProfile',
-        'signer:SignPayload',
-        'signer:GetRevocationStatus',
-      ],
-    });
-
-  //  dockerBuild.addToRolePolicy(signerPolicy);
-
     // Define los artefactos
     const sourceOutput = new codepipeline.Artifact();
-    const buildOutput = new codepipeline.Artifact();
+    const unitTestOutput = new codepipeline.Artifact();
     const dockerBuildOutput = new codepipeline.Artifact();
 
     // Agrega la etapa de origen con GitHub
@@ -117,17 +94,17 @@ export class MyPipelineStack extends cdk.Stack {
 
     // Agrega la etapa de construcción
     pipeline.addStage({
-      stageName: 'Build',
+      stageName: 'Code-Quality-Testing',
       actions: [
         new codepipeline_actions.CodeBuildAction({
-          actionName: 'Build',
-          project: buildProject,
+          actionName: 'Unit-Test',
+          project: codeBuild,
           input: sourceOutput,
-          outputs: [buildOutput],
+          outputs: [unitTestOutput],
         }),
       ],
     });
-
+  
     pipeline.addStage({
       stageName: 'Docker-Push-ECR',
       actions: [
@@ -150,6 +127,22 @@ export class MyPipelineStack extends cdk.Stack {
         }),
       ]
     });
+
+    /*pipeline.addStage({
+      stageName: 'Deploy-Production',
+      actions: [
+        new codepipeline_actions.ManualApprovalAction({
+          actionName: 'Approve-Deploy-Prod',
+          runOrder: 1,
+        }),
+        new codepipeline_actions.EcsDeployAction({
+          actionName: 'Deploy-Fargate-Prod',
+          service: props.fargateServiceProd.service,
+          input: dockerBuildOutput,
+          runOrder: 2,
+        }),
+      ],
+    });*/
 
     // Crear una salida para la URL del pipeline
     new CfnOutput(this, 'PipelineConsoleUrl', {
