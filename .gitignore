@@ -13,3 +13,12 @@ Thumbs.db
 
 # Environment files
 .env
+
+*.swp
+package-lock.json
+npm-debug.log*
+cdk.context.json
+.cdk.staging
+cdk.out
+app-cdk/
+cdk.out/
