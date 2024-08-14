@@ -1,4 +1,4 @@
-import { Stack, StackProps, CfnOutput } from 'aws-cdk-lib';
+import { Stack, StackProps, CfnOutput, Duration } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
@@ -10,6 +10,7 @@ import * as ecsPatterns from 'aws-cdk-lib/aws-ecs-patterns';
 import * as cdk from 'aws-cdk-lib';
 import * as codedeploy from 'aws-cdk-lib/aws-codedeploy';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
+import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
 interface ConsumerProps extends StackProps {
   ecrRepository: ecr.Repository,
   fargateServiceTest: ecsPatterns.ApplicationLoadBalancedFargateService,
@@ -166,5 +167,37 @@ export class PipelineCdkStack extends cdk.Stack {
     new CfnOutput(this, 'PipelineConsoleUrl', {
       value: `https://${cdk.Aws.REGION}.console.aws.amazon.com/codesuite/codepipeline/pipelines/${pipeline.pipelineName}/view?region=${cdk.Aws.REGION}`,
     });
+
+    const buildRate = new cloudwatch.GraphWidget({
+      title: 'Build Successes and Failures',
+      width: 6,
+      height: 6,
+      view: cloudwatch.GraphWidgetView.PIE,
+      left: [
+        new cloudwatch.Metric({
+          namespace: 'AWS/CodeBuild',
+          metricName: 'SucceededBuilds',
+          statistic: 'sum',
+          label: 'Succeeded Builds',
+          period: Duration.days(30),
+        }),
+        new cloudwatch.Metric({
+          namespace: 'AWS/CodeBuild',
+          metricName: 'FailedBuilds',
+          statistic: 'sum',
+          label: 'Failed Builds',
+          period: Duration.days(30),
+        }),
+      ],
+    });
+    new cloudwatch.Dashboard(this, 'CICD_Dashboard', {
+      dashboardName: 'CICD_Dashboard',
+      widgets: [
+        [
+          buildRate,
+        ],
+      ],
+    });
   }
 }
+    
