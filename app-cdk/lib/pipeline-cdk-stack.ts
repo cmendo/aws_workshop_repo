@@ -117,7 +117,7 @@ export class PipelineCdkStack extends cdk.Stack {
       ],
     });
 
-   /* pipeline.addStage({
+    pipeline.addStage({
       stageName: 'Deploy-Test',
       actions: [
         new codepipeline_actions.EcsDeployAction({
