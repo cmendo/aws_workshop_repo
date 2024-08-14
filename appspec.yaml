@@ -1,0 +1,9 @@
+version: 0.0
+Resources:
+  - TargetService:
+      Type: AWS::ECS::Service
+      Properties:
+        TaskDefinition: "arn:aws:ecs:us-east-1:808759191433:cluster/prod-app-stack-prodEcsClusterA71E1B7A-vwr0aXaFnzMa"
+        LoadBalancerInfo:
+          ContainerName: "my-app"
+          ContainerPort: 8081
