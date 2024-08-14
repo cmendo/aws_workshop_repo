@@ -128,7 +128,7 @@ export class PipelineCdkStack extends cdk.Stack {
       ]
     });
 
-   /* pipeline.addStage({
+    pipeline.addStage({
       stageName: 'Deploy-Production',
       actions: [
         new codepipeline_actions.ManualApprovalAction({
@@ -142,7 +142,7 @@ export class PipelineCdkStack extends cdk.Stack {
           runOrder: 2,
         }),
       ],
-    });*/
+    });
 
     // Crear una salida para la URL del pipeline
     new CfnOutput(this, 'PipelineConsoleUrl', {
