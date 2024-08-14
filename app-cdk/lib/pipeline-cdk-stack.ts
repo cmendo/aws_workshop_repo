@@ -190,14 +190,85 @@ export class PipelineCdkStack extends cdk.Stack {
         }),
       ],
     });
+    const buildsCount = new cloudwatch.SingleValueWidget({
+      title: 'Total Builds',
+      width: 6,
+      height: 6,
+      metrics: [
+        new cloudwatch.Metric({
+          namespace: 'AWS/CodeBuild',
+          metricName: 'Builds',
+          statistic: 'sum',
+          label: 'Builds',
+          period: Duration.days(30),
+        }),
+      ],
+    });
+    const averageDuration = new cloudwatch.GaugeWidget({
+      title: 'Average Build Time',
+      width: 6,
+      height: 6,
+      metrics: [
+        new cloudwatch.Metric({
+          namespace: 'AWS/CodeBuild',
+          metricName: 'Duration',
+          statistic: 'avg',
+          label: 'Duration',
+          period: Duration.hours(1),
+        }),
+      ],
+      leftYAxis: {
+        min: 0,
+        max: 300,
+      },
+    });
+
+    const queuedDuration = new cloudwatch.GaugeWidget({
+      title: 'Build Queue Duration',
+      width: 6,
+      height: 6,
+      metrics: [
+        new cloudwatch.Metric({
+          namespace: 'AWS/CodeBuild',
+          metricName: 'QueuedDuration',
+          statistic: 'avg',
+          label: 'Duration',
+          period: Duration.hours(1),
+        }),
+      ],
+      leftYAxis: {
+        min: 0,
+        max: 60,
+      },
+    });
+    const downloadDuration = new cloudwatch.GraphWidget({
+      title: 'Checkout Duration',
+      width: 24,
+      height: 5,
+      left: [
+        new cloudwatch.Metric({
+          namespace: 'AWS/CodeBuild',
+          metricName: 'DownloadSourceDuration',
+          statistic: 'max',
+          label: 'Duration',
+          period: Duration.minutes(5),
+          color: cloudwatch.Color.PURPLE,
+        }),
+      ],
+    });
     new cloudwatch.Dashboard(this, 'CICD_Dashboard', {
       dashboardName: 'CICD_Dashboard',
       widgets: [
         [
           buildRate,
+          buildsCount,
+          averageDuration,
+          queuedDuration,
+          downloadDuration,
         ],
       ],
     });
+
   }
 }
     
